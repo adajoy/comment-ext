@@ -81,9 +81,9 @@ function extractDouyinComments() {
   
   commentItems.forEach((commentElement, index) => {
     try {
-      // Extract username from .BT7MlqJC anchor or span
+      // Extract username from .comment-item-info-wrap anchor or span
       let username = '未知用户';
-      const usernameLink = commentElement.querySelector('.BT7MlqJC a');
+      const usernameLink = commentElement.querySelector('.comment-item-info-wrap a');
       if (usernameLink) {
         // Try to get text from nested spans
         const usernameSpans = usernameLink.querySelectorAll('span');
@@ -95,22 +95,13 @@ function extractDouyinComments() {
         }
       }
       
-      // Extract comment content from .C7LroK_h with nested spans
       let content = '无内容';
-      const contentContainer = commentElement.querySelector('.C7LroK_h');
+      const contentContainer = commentElement.children[1];
       if (contentContainer) {
-        // Try to get the innermost span text
-        const contentSpans = contentContainer.querySelectorAll('span');
-        if (contentSpans.length > 0) {
-          content = Array.from(contentSpans).pop().textContent.trim();
-        } else {
-          content = contentContainer.textContent.trim();
-        }
+        content = contentContainer.children[0].children[1].textContent
       }
       
-      // Extract time from .fJhvAqos span (e.g., "1月前·四川")
-      const timeElement = commentElement.querySelector('.fJhvAqos');
-      const time = timeElement ? timeElement.textContent.trim() : '';
+      const time = contentContainer.children[0].children[2].textContent
       
       commentsList.push({
         username: username,

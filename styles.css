@@ -20,17 +20,33 @@ h1 {
   color: #333;
 }
 
-#extractBtn {
-  background-color: #ff2442;
-  color: white;
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0 15px 0;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+button {
   border: none;
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-size: 14px;
   font-weight: 500;
   border-radius: 6px;
   cursor: pointer;
-  width: 100%;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+#extractBtn {
+  background-color: #ff2442;
+  color: white;
+  flex: 1;
 }
 
 #extractBtn:hover {
@@ -39,6 +55,39 @@ h1 {
 
 #extractBtn:active {
   background-color: #c71832;
+}
+
+.ai-btn {
+  background-color: #4CAF50;
+  color: white;
+  flex: 1;
+}
+
+.ai-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.ai-btn:active:not(:disabled) {
+  background-color: #3d8b40;
+}
+
+.ai-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-btn {
+  background-color: #757575;
+  color: white;
+  padding: 10px 12px;
+}
+
+.settings-btn:hover {
+  background-color: #616161;
+}
+
+.settings-btn:active {
+  background-color: #424242;
 }
 
 #status {
@@ -64,10 +113,20 @@ h1 {
   color: #d32f2f;
 }
 
-#tableContainer {
+.status-warning {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+#tableContainer, #aiResultsContainer {
   display: none;
   margin-top: 20px;
   overflow-x: auto;
+}
+
+#aiResultsContainer {
+  border-top: 2px solid #4CAF50;
+  padding-top: 15px;
 }
 
 table {

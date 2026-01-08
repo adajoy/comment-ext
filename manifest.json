@@ -1,15 +1,23 @@
 {
   "manifest_version": 3,
-  "name": "小红书/抖音评论提取器",
-  "version": "1.0",
-  "description": "从小红书和抖音提取评论并显示在表格中",
+  "name": "小红书/抖音评论提取器 + AI分析",
+  "version": "1.1",
+  "description": "从小红书和抖音提取评论，使用 DeepSeek AI 分析汽车相关内容",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api.deepseek.com/*"
   ],
   "action": {
     "default_popup": "popup.html"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": ["*://*.xiaohongshu.com/*", "*://*.douyin.com/*"],

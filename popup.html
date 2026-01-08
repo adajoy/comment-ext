@@ -9,7 +9,11 @@
 <body>
     <div class="container">
         <h1>评论提取器</h1>
-        <button id="extractBtn">提取评论</button>
+        <div class="button-group">
+            <button id="extractBtn">提取评论</button>
+            <button id="aiAnalyzeBtn" class="ai-btn" disabled>🤖 AI 分析</button>
+            <button id="settingsBtn" class="settings-btn">⚙️ 设置</button>
+        </div>
         <div id="status"></div>
         <div id="tableContainer">
             <table id="commentsTable">
@@ -22,6 +26,21 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        <div id="aiResultsContainer" style="display: none;">
+            <h2>🚗 AI 分析结果 - 汽车相关用户</h2>
+            <table id="aiResultsTable">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>用户名</th>
+                        <th>评论内容</th>
+                        <th>时间</th>
+                    </tr>
+                </thead>
+                <tbody id="aiResultsBody">
                 </tbody>
             </table>
         </div>
