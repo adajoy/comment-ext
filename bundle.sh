@@ -1,0 +1,1 @@
+zip -r comment-ext.zip . -x "*.git*" "*.DS_Store" "*.md" "*.zip" "*.sh" ".gitignore"
