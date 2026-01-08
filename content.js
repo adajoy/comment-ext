@@ -1,4 +1,4 @@
-// Content script that runs on xiaohongshu.com pages
+// Content script that runs on xiaohongshu.com and douyin.com pages
 // Listens for messages from the popup to extract comments
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -13,32 +13,112 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true; // Keep the message channel open for async response
 });
 
+function detectPlatform() {
+  const url = location.href;
+  if (url.includes('douyin.com')) return 'douyin';
+  if (url.includes('xiaohongshu.com')) return 'xiaohongshu';
+  return null;
+}
+
 function extractComments() {
+  const platform = detectPlatform();
+  
+  if (platform === 'xiaohongshu') {
+    return extractXiaohongshuComments();
+  } else if (platform === 'douyin') {
+    return extractDouyinComments();
+  } else {
+    throw new Error('不支持的平台');
+  }
+}
+
+function extractXiaohongshuComments() {
   const commentsList = [];
   
-  // Find all parent comments
-  const parentComments = document.querySelectorAll('.comments-container .list-container .parent-comment');
+  // Find all comment items
+  const commentItems = document.querySelectorAll('.comment-item');
   
-  if (parentComments.length === 0) {
-    throw new Error('No comments found on this page');
+  if (commentItems.length === 0) {
+    throw new Error('未找到评论');
   }
   
-  parentComments.forEach((commentElement, index) => {
+  commentItems.forEach((commentElement, index) => {
     try {
       // Extract username from .author .name anchor tag
       const usernameElement = commentElement.querySelector('.author .name');
-      const username = usernameElement ? usernameElement.textContent.trim() : 'Unknown User';
+      const username = usernameElement ? usernameElement.textContent.trim() : '未知用户';
       
       // Extract comment content from .content .note-text span
       const contentElement = commentElement.querySelector('.content .note-text span');
-      const content = contentElement ? contentElement.textContent.trim() : 'No content';
+      const content = contentElement ? contentElement.textContent.trim() : '无内容';
+      
+      // Extract time from .info .date span (first span)
+      const timeElement = commentElement.querySelector('.info .date span');
+      const time = timeElement ? timeElement.textContent.trim() : '';
       
       commentsList.push({
         username: username,
-        content: content
+        content: content,
+        time: time
       });
     } catch (error) {
-      console.error(`Error extracting comment ${index}:`, error);
+      console.error(`提取评论 ${index} 时出错:`, error);
+    }
+  });
+  
+  return commentsList;
+}
+
+function extractDouyinComments() {
+  const commentsList = [];
+  
+  // Find all comment items in the comment list
+  const commentItems = document.querySelectorAll('[data-e2e="comment-item"]');
+  
+  if (commentItems.length === 0) {
+    throw new Error('未找到评论');
+  }
+  
+  commentItems.forEach((commentElement, index) => {
+    try {
+      // Extract username from .BT7MlqJC anchor or span
+      let username = '未知用户';
+      const usernameLink = commentElement.querySelector('.BT7MlqJC a');
+      if (usernameLink) {
+        // Try to get text from nested spans
+        const usernameSpans = usernameLink.querySelectorAll('span');
+        if (usernameSpans.length > 0) {
+          // Get the innermost span text
+          username = Array.from(usernameSpans).pop().textContent.trim();
+        } else {
+          username = usernameLink.textContent.trim();
+        }
+      }
+      
+      // Extract comment content from .C7LroK_h with nested spans
+      let content = '无内容';
+      const contentContainer = commentElement.querySelector('.C7LroK_h');
+      if (contentContainer) {
+        // Try to get the innermost span text
+        const contentSpans = contentContainer.querySelectorAll('span');
+        if (contentSpans.length > 0) {
+          content = Array.from(contentSpans).pop().textContent.trim();
+        } else {
+          content = contentContainer.textContent.trim();
+        }
+      }
+      
+      // Extract time from .fJhvAqos span (e.g., "1月前·四川")
+      const timeElement = commentElement.querySelector('.fJhvAqos');
+      const time = timeElement ? timeElement.textContent.trim() : '';
+      
+      commentsList.push({
+        username: username,
+        content: content,
+        time: time
+      });
+    } catch (error) {
+      console.error(`提取评论 ${index} 时出错:`, error);
     }
   });
   

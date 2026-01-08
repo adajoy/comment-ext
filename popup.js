@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   async function extractComments() {
     // Clear previous results
     tableBody.innerHTML = '';
-    statusDiv.textContent = 'Extracting comments...';
+    statusDiv.textContent = '提取评论中...';
     statusDiv.className = 'status-loading';
     tableContainer.style.display = 'none';
     
@@ -19,15 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // Get the active tab
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       
-      // Check if we're on xiaohongshu.com
-      if (!tab.url.includes('xiaohongshu.com')) {
-        throw new Error('Please navigate to xiaohongshu.com first');
+      // Check if we're on xiaohongshu.com or douyin.com
+      if (!tab.url.includes('xiaohongshu.com') && !tab.url.includes('douyin.com')) {
+        throw new Error('请先访问小红书或抖音');
       }
       
       // Send message to content script
       chrome.tabs.sendMessage(tab.id, { action: 'extractComments' }, (response) => {
         if (chrome.runtime.lastError) {
-          statusDiv.textContent = 'Error: ' + chrome.runtime.lastError.message;
+          statusDiv.textContent = '错误: ' + chrome.runtime.lastError.message;
           statusDiv.className = 'status-error';
           return;
         }
@@ -35,24 +35,24 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response && response.success) {
           displayComments(response.comments);
         } else {
-          statusDiv.textContent = 'Error: ' + (response?.error || 'Unknown error');
+          statusDiv.textContent = '错误: ' + (response?.error || '未知错误');
           statusDiv.className = 'status-error';
         }
       });
     } catch (error) {
-      statusDiv.textContent = 'Error: ' + error.message;
+      statusDiv.textContent = '错误: ' + error.message;
       statusDiv.className = 'status-error';
     }
   }
   
   function displayComments(comments) {
     if (!comments || comments.length === 0) {
-      statusDiv.textContent = 'No comments found on this page';
+      statusDiv.textContent = '未找到评论';
       statusDiv.className = 'status-error';
       return;
     }
     
-    statusDiv.textContent = `Found ${comments.length} comment(s)`;
+    statusDiv.textContent = `找到 ${comments.length} 条评论`;
     statusDiv.className = 'status-success';
     
     // Generate table rows
@@ -68,9 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const cellContent = document.createElement('td');
       cellContent.textContent = comment.content;
       
+      const cellTime = document.createElement('td');
+      cellTime.textContent = comment.time || '-';
+      
       row.appendChild(cellNo);
       row.appendChild(cellUsername);
       row.appendChild(cellContent);
+      row.appendChild(cellTime);
       tableBody.appendChild(row);
     });
     

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Xiaohongshu Comment Extractor",
+  "name": "小红书/抖音评论提取器",
   "version": "1.0",
-  "description": "Extract comments from xiaohongshu.com and display them in a table",
+  "description": "从小红书和抖音提取评论并显示在表格中",
   "permissions": [
     "activeTab",
     "scripting"
@@ -12,7 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.xiaohongshu.com/*"],
+      "matches": ["*://*.xiaohongshu.com/*", "*://*.douyin.com/*"],
       "js": ["content.js"]
     }
   ]
