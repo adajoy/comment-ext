@@ -3,6 +3,11 @@
   "name": "小红书/抖音评论提取器 + AI分析",
   "version": "1.1",
   "description": "从小红书和抖音提取评论，使用 DeepSeek AI 分析汽车相关内容",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "permissions": [
     "activeTab",
     "scripting",
@@ -12,7 +17,12 @@
     "https://api.deepseek.com/*"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "background": {
     "service_worker": "background.js"
